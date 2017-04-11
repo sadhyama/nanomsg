@@ -23,10 +23,20 @@
 #   IN THE SOFTWARE.
 #
 
+# /* Commenting out few code to reduce libnanomsg size for yocto environment. */
+  
 set (NN_SOURCES
     nn.h
+#   inproc.h
+#   ipc.h
     tcp.h
+#   ws.h
+#   pair.h
+#   pubsub.h
+#   reqrep.h
     pipeline.h
+#   survey.h
+#   bus.h
 
     core/ep.h
     core/ep.c
@@ -105,8 +115,8 @@ set (NN_SOURCES
     utils/wire.h
     utils/wire.c
 
-    devices/device.h
-    devices/device.c
+#    devices/device.h
+#    devices/device.c
 
     protocols/utils/dist.h
     protocols/utils/dist.c
@@ -119,6 +129,9 @@ set (NN_SOURCES
     protocols/utils/priolist.h
     protocols/utils/priolist.c
 
+#    protocols/bus/bus.c
+#    protocols/bus/xbus.h
+#    protocols/bus/xbus.c
 
     protocols/pipeline/push.c
     protocols/pipeline/pull.c
@@ -127,27 +140,77 @@ set (NN_SOURCES
     protocols/pipeline/xpush.h
     protocols/pipeline/xpush.c
 
+#    protocols/pair/pair.c
+#    protocols/pair/xpair.h
+#    protocols/pair/xpair.c
 
-    transports/utils/backoff.h
-    transports/utils/backoff.c
-    transports/utils/dns.h
-    transports/utils/dns.c
-    transports/utils/dns_getaddrinfo.h
-    transports/utils/dns_getaddrinfo.inc
-    transports/utils/dns_getaddrinfo_a.h
-    transports/utils/dns_getaddrinfo_a.inc
-    transports/utils/iface.h
-    transports/utils/iface.c
-    transports/utils/literal.h
-    transports/utils/literal.c
-    transports/utils/port.h
-    transports/utils/port.c
-    transports/utils/streamhdr.h
-    transports/utils/streamhdr.c
-    transports/utils/base64.h
-    transports/utils/base64.c
+#    protocols/pubsub/pub.c
+#    protocols/pubsub/sub.c
+#    protocols/pubsub/trie.h
+#    protocols/pubsub/trie.c
+#    protocols/pubsub/xpub.h
+#    protocols/pubsub/xpub.c
+#    protocols/pubsub/xsub.h
+#    protocols/pubsub/xsub.c
 
- 
+#    protocols/reqrep/req.h
+#    protocols/reqrep/req.c
+#    protocols/reqrep/rep.h
+#    protocols/reqrep/rep.c
+#    protocols/reqrep/task.h
+#    protocols/reqrep/task.c
+#    protocols/reqrep/xrep.h
+#    protocols/reqrep/xrep.c
+#    protocols/reqrep/xreq.h
+#    protocols/reqrep/xreq.c
+
+#    protocols/survey/respondent.c
+#    protocols/survey/surveyor.c
+#    protocols/survey/xrespondent.h
+#    protocols/survey/xrespondent.c
+#    protocols/survey/xsurveyor.h
+#    protocols/survey/xsurveyor.c 
+
+#    transports/utils/backoff.h
+#    transports/utils/backoff.c
+#    transports/utils/dns.h
+#    transports/utils/dns.c
+#    transports/utils/dns_getaddrinfo.h
+#    transports/utils/dns_getaddrinfo.inc
+#    transports/utils/dns_getaddrinfo_a.h
+#    transports/utils/dns_getaddrinfo_a.inc
+#    transports/utils/iface.h
+#    transports/utils/iface.c
+#    transports/utils/literal.h
+#    transports/utils/literal.c
+#    transports/utils/port.h
+#    transports/utils/port.c
+#    transports/utils/streamhdr.h
+#    transports/utils/streamhdr.c
+#    transports/utils/base64.h
+#    transports/utils/base64.c
+
+#    transports/inproc/binproc.h
+#    transports/inproc/binproc.c
+#    transports/inproc/cinproc.h
+#    transports/inproc/cinproc.c
+#    transports/inproc/inproc.c
+#    transports/inproc/ins.h
+#    transports/inproc/ins.c
+#    transports/inproc/msgqueue.h
+#    transports/inproc/msgqueue.c
+#    transports/inproc/sinproc.h
+#    transports/inproc/sinproc.c
+
+#    transports/ipc/aipc.h
+#    transports/ipc/aipc.c
+#    transports/ipc/bipc.h
+#    transports/ipc/bipc.c
+#    transports/ipc/cipc.h
+#    transports/ipc/cipc.c
+#    transports/ipc/ipc.c
+#    transports/ipc/sipc.h
+#    transports/ipc/sipc.c 
 
     transports/tcp/atcp.h
     transports/tcp/atcp.c
@@ -159,7 +222,19 @@ set (NN_SOURCES
     transports/tcp/stcp.c
     transports/tcp/tcp.c
 
-
+#    transports/ws/aws.h
+#    transports/ws/aws.c
+#    transports/ws/bws.h
+#    transports/ws/bws.c
+#    transports/ws/cws.h
+#    transports/ws/cws.c
+#    transports/ws/sws.h
+#    transports/ws/sws.c
+#    transports/ws/ws.c
+#    transports/ws/ws_handshake.h
+#    transports/ws/ws_handshake.c
+#    transports/ws/sha1.h
+#    transports/ws/sha1.c 
 )
 
 if (WIN32)

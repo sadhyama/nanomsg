@@ -94,13 +94,14 @@ else ()
 endif()
 
 # User-defined options.
+# Commenting out few code to reduce libnanomsg size for yocto environment.
 
 option (NN_STATIC_LIB "Build static library instead of shared library." OFF)
-option (NN_ENABLE_DOC "Enable building documentation." ON)
+option (NN_ENABLE_DOC "Enable building documentation." OFF)
 option (NN_ENABLE_GETADDRINFO_A "Enable/disable use of getaddrinfo_a in place of getaddrinfo." ON)
 option (NN_TESTS "Build and run nanomsg tests" OFF)
 option (NN_TOOLS "Build nanomsg tools" OFF)
-
+#option (NN_ENABLE_NANOCAT "Enable building nanocat utility." ${NN_TOOLS})
 
 #  Platform checks.
 
@@ -241,6 +242,10 @@ add_subdirectory (src)
 
 #  Build the tools
 
+if (NN_ENABLE_NANOCAT)
+    add_executable (nanocat tools/nanocat.c tools/options.c)
+    target_link_libraries (nanocat ${PROJECT_NAME})
+endif ()
 
 if (NN_ENABLE_DOC)
     find_program (ASCIIDOCTOR_EXE asciidoctor)
@@ -289,6 +294,9 @@ if (NN_ENABLE_DOC)
 
     endmacro (add_libnanomsg_man)
 
+    if (NN_ENABLE_NANOCAT)
+        add_libnanomsg_man (nanocat 1)
+    endif ()
 
     add_libnanomsg_man (nn_errno 3)
     add_libnanomsg_man (nn_strerror 3)
@@ -334,13 +342,108 @@ endif ()
 
 #  Build unit tests.
 
+if (NN_TESTS)
 
+    enable_testing ()
+    set (all_tests "")
+
+    set (TEST_PORT 12100)
+    macro (add_libnanomsg_test NAME TIMEOUT)
+        list (APPEND all_tests ${NAME})
+        add_executable (${NAME} tests/${NAME}.c)
+        target_link_libraries (${NAME} ${PROJECT_NAME})
+        add_test (NAME ${NAME} COMMAND ${NAME} ${TEST_PORT})
+        set_tests_properties (${NAME} PROPERTIES TIMEOUT ${TIMEOUT})
+        math (EXPR TEST_PORT "${TEST_PORT}+10")
+    endmacro (add_libnanomsg_test)
+
+    #  Transport tests.
+    add_libnanomsg_test (inproc 5)
+    add_libnanomsg_test (inproc_shutdown 5)
+    add_libnanomsg_test (ipc 5)
+    add_libnanomsg_test (ipc_shutdown 30)
+    add_libnanomsg_test (ipc_stress 5)
+    add_libnanomsg_test (tcp 5)
+    add_libnanomsg_test (tcp_shutdown 120)
+    add_libnanomsg_test (ws 5)
+
+    #  Protocol tests.
+    add_libnanomsg_test (pair 5)
+    add_libnanomsg_test (pubsub 5)
+    add_libnanomsg_test (reqrep 5)
+    add_libnanomsg_test (pipeline 5)
+    add_libnanomsg_test (survey 5)
+    add_libnanomsg_test (bus 5)
+
+    #  Feature tests.
+    add_libnanomsg_test (async_shutdown 30)
+    add_libnanomsg_test (block 5)
+    add_libnanomsg_test (term 5)
+    add_libnanomsg_test (timeo 5)
+    add_libnanomsg_test (iovec 5)
+    add_libnanomsg_test (msg 5)
+    add_libnanomsg_test (prio 5)
+    add_libnanomsg_test (poll 5)
+    add_libnanomsg_test (device 5)
+    add_libnanomsg_test (device4 5)
+    add_libnanomsg_test (device5 5)
+    add_libnanomsg_test (device6 5)
+    add_libnanomsg_test (device7 30)
+    add_libnanomsg_test (emfile 5)
+    add_libnanomsg_test (domain 5)
+    add_libnanomsg_test (trie 5)
+    add_libnanomsg_test (list 5)
+    add_libnanomsg_test (hash 5)
+    add_libnanomsg_test (stats 5)
+    add_libnanomsg_test (symbol 5)
+    add_libnanomsg_test (separation 5)
+    add_libnanomsg_test (zerocopy 5)
+    add_libnanomsg_test (shutdown 5)
+    add_libnanomsg_test (cmsg 5)
+    add_libnanomsg_test (bug328 5)
+    add_libnanomsg_test (bug777 5)
+    add_libnanomsg_test (ws_async_shutdown 5)
+    add_libnanomsg_test (reqttl 10)
+    add_libnanomsg_test (surveyttl 10)
+
+    # Platform-specific tests
+    if (WIN32)	
+        add_libnanomsg_test (win_sec_attr 5)
+    endif()
+
+    #  Build the performance tests.
+
+    macro (add_libnanomsg_perf NAME)
+        add_executable (${NAME} perf/${NAME}.c)
+        target_link_libraries (${NAME} ${PROJECT_NAME})
+    endmacro (add_libnanomsg_perf)
+
+    add_libnanomsg_perf (inproc_lat)
+    add_libnanomsg_perf (inproc_thr)
+    add_libnanomsg_perf (local_lat)
+    add_libnanomsg_perf (remote_lat)
+    add_libnanomsg_perf (local_thr)
+    add_libnanomsg_perf (remote_thr)
+
+endif ()
 
 install (TARGETS LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
 install (TARGETS ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
 install (FILES src/nn.h DESTINATION include/nanomsg)
+#install (FILES src/inproc.h DESTINATION include/nanomsg)
+#install (FILES src/ipc.h DESTINATION include/nanomsg)
 install (FILES src/tcp.h DESTINATION include/nanomsg)
+#install (FILES src/ws.h DESTINATION include/nanomsg)
+#install (FILES src/pair.h DESTINATION include/nanomsg)
+#install (FILES src/pubsub.h DESTINATION include/nanomsg)
+#install (FILES src/reqrep.h DESTINATION include/nanomsg)
 install (FILES src/pipeline.h DESTINATION include/nanomsg)
+#install (FILES src/survey.h DESTINATION include/nanomsg)
+#install (FILES src/bus.h DESTINATION include/nanomsg)
+
+if (NN_ENABLE_NANOCAT)
+    install (TARGETS nanocat RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+endif()
 
 set (CPACK_PACKAGE_NAME ${PROJECT_NAME})
 set (CPACK_PACKAGE_VERSION ${NN_PACKAGE_VERSION})

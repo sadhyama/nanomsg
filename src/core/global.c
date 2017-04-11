@@ -45,6 +45,9 @@
 #include "../utils/msg.h"
 #include "../utils/attr.h"
 
+/* Commenting out few code to reduce libnanomsg size for yocto environment. */
+
+//#include "../pubsub.h"
 #include "../pipeline.h"
 
 #include <stddef.h>
@@ -78,27 +81,80 @@ CT_ASSERT (NN_MAX_SOCKETS <= 0x10000);
 
 /*  We could put these in an external header file, but there really is
     need to.  We are the only thing that needs them. */
+    
+/*extern struct nn_socktype nn_pair_socktype;
+extern struct nn_socktype nn_xpair_socktype;
+extern struct nn_socktype nn_pub_socktype;
+extern struct nn_socktype nn_sub_socktype;
+extern struct nn_socktype nn_xpub_socktype;
+extern struct nn_socktype nn_xsub_socktype;
+extern struct nn_socktype nn_rep_socktype;
+extern struct nn_socktype nn_req_socktype;
+extern struct nn_socktype nn_xrep_socktype;
+extern struct nn_socktype nn_xreq_socktype;*/
 extern struct nn_socktype nn_push_socktype;
 extern struct nn_socktype nn_xpush_socktype;
 extern struct nn_socktype nn_pull_socktype;
 extern struct nn_socktype nn_xpull_socktype;
 
+/*extern struct nn_socktype nn_respondent_socktype;
+extern struct nn_socktype nn_surveyor_socktype;
+extern struct nn_socktype nn_xrespondent_socktype;
+extern struct nn_socktype nn_xsurveyor_socktype;
+extern struct nn_socktype nn_bus_socktype;
+extern struct nn_socktype nn_xbus_socktype;*/
+
+
 /*  Array of known socket types. */
 const struct nn_socktype *nn_socktypes[] = {
+/*
+   &nn_pair_socktype,
+    &nn_xpair_socktype,
+    &nn_pub_socktype,
+    &nn_sub_socktype,
+    &nn_xpub_socktype,
+    &nn_xsub_socktype,
+    &nn_rep_socktype,
+    &nn_req_socktype,
+    &nn_xrep_socktype,
+    &nn_xreq_socktype,
+*/
     &nn_push_socktype,
     &nn_xpush_socktype,
     &nn_pull_socktype,
     &nn_xpull_socktype,
+/*
+   &nn_respondent_socktype,
+    &nn_surveyor_socktype,
+    &nn_xrespondent_socktype,
+    &nn_xsurveyor_socktype,
+    &nn_bus_socktype,
+    &nn_xbus_socktype,
+*/
     NULL,
 };
 
 /* As with protocols, we could have these in a header file, but we are the
    only consumer, so just declare them inline. */
 
+/*
+extern struct nn_transport nn_inproc;
+extern struct nn_transport nn_ipc;
+*/
 extern struct nn_transport nn_tcp;
+/*
+extern struct nn_transport nn_ws;
+*/
 
 const struct nn_transport *nn_transports[] = {
+/*
+    &nn_inproc,
+    &nn_ipc,
+*/
     &nn_tcp,
+/*
+    &nn_ws,
+*/
     NULL,
 };
 
